@@ -1,4 +1,4 @@
-const API_URL = "https://loreal-chatbot.your-subdomain.workers.dev/";
+const API_URL = "https://chatbot.kzhao-f2d.workers.dev/";
 const SYSTEM_MESSAGE = `
 You are a helpful L'Oréal beauty advisor.
 Only answer questions about L'Oréal products, skincare, makeup, haircare,
