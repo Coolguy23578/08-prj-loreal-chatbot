@@ -44,6 +44,7 @@ chatForm.addEventListener("submit", async (e) => {
   sendButton.disabled = true;
   addMessage("ai", "Thinking...");
   const thinkingMessage = chatWindow.lastElementChild;
+  let responseStatus = "not received";
 
   try {
     const response = await fetch(API_URL, {
@@ -51,13 +52,14 @@ chatForm.addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages }),
     });
+    responseStatus = response.status;
 
     if (!response.ok) {
       throw new Error(`Request failed with status ${response.status}`);
     }
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content;
+    const reply = data.choices[0].message.content;
     if (!reply) {
       throw new Error("The API returned no assistant message.");
     }
@@ -67,7 +69,7 @@ chatForm.addEventListener("submit", async (e) => {
   } catch (error) {
     thinkingMessage.textContent =
       "Sorry, I could not connect right now. Please try again.";
-    console.error("Chat request failed:", error);
+    console.error("Chat request failed:", error, "HTTP status:", responseStatus);
   } finally {
     sendButton.disabled = false;
     userInput.focus();
