@@ -20,24 +20,33 @@ export default {
       );
     }
 
-    const userInput = await request.json();
-    const requestBody = {
-      model: "gpt-4.1",
-      messages: userInput.messages,
-      max_completion_tokens: 300,
-    };
+    try {
+      const userInput = await request.json();
+      const requestBody = {
+        model: "gpt-4.1",
+        messages: userInput.messages,
+        max_completion_tokens: 300,
+      };
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + env.OPENAI_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + env.OPENAI_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-    const data = await response.json();
-    return jsonResponse(data, response.status, corsHeaders);
+      const data = await response.json();
+      return jsonResponse(data, response.status, corsHeaders);
+    } catch (error) {
+      console.error("Worker request failed:", error);
+      return jsonResponse(
+        { error: "The Worker could not process the request." },
+        500,
+        corsHeaders,
+      );
+    }
   },
 };
 
